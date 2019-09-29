@@ -1,0 +1,46 @@
+*ramdisk3.dmg
+First, edit ramdisk to create ramdisk3.
+Let's rewrite using Hex Edit.
+
+Look for the point where "d.i.s.k...d.m.g" is written. This is the deepest part of this ramdisk.
+Let's take the next block. It is free space from 0xa600.
+
+Write the data from 0x8e00 to 0x200byte to the area of ​​0xa600-0xa800.
+
+Replace all 1 bytes of the following offset with "03".
+0xa600 + 0x9
+0xa600 + 0x23
+0xa600 + 0x2f
+0xa600 + 0x3b
+0xa600 + 0x47
+0xa600 + 0x53
+0xa600 + 0x5F
+0xa600 + 0x6B
+0xa600 + 0x77
+0xa600 + 0x83
+0xa600 + 0x8F
+0xa600 + 0x9B
+0xa600 + 0xA7
+0xa600 + 0xB3
+
+0x880f: 02 -> 03
+0x8813: 03 -> 0f [= (0xa600-0x8800)/0x200]
+
+*ramdiskF
+Edit ramdisk3 to create ramdiskF.
+Write BLOCK_400_0 to 0x400.
+Write BLOCK_8800_1 to 0x8800.
+Write BLOCK_800_2 to 0x800.
+
+Replace the following offset
+0x8813: 03 -> 0f [= (0xa600-0x8800)/0x200]
+
+Be careful here!!
+iloader was relocated to 0x600000, but the actual iBoot base address is 0xbff00000.
+For example, if you look at 0x88f7, you need to make this change.
+0x88f7: 00 40 74 00 -> 00 40 04 84
+Yes, the reverse of patch_nettoyeur() in iBoot.h.
+Adjust everything from 0x8900-0x9000, 0x800-0x900
+
+Last, set "01" to 2 bytes before the last "03" written to 0xa600.
+0xa600 + 0xB3 - 0x2: 00 -> 01

@@ -1,0 +1,13 @@
+First you need to dump iBoot using kdumper.
+kdumper requires tfp0. This should be done much earlier after the device boots up.
+
+Once you get a 1MB dump, compare the difference with the actual iBoot.
+
+
+For example, take a look at 0xbff441b0. iBoot.dec is 0x0e000000 but dump is 0x0e000019.
+0xbff441b0: 0x0e000000 != 0x0e000019
+
+This must be rewrite by schellcode.
+Write the code nettoyeur. Let's create a patch that corrects these __DATA differences.
+
+nettoyeur must be compiled with the GNU Arm Embedded Toolchain and compressed with lzss.
